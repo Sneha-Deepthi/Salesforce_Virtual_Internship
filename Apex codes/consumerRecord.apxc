@@ -1,0 +1,34 @@
+public class ConsumerRecord {
+    public static void sendEmailNotification(List<consumer__c> con) {
+        List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+        
+        for (consumer__c c : con) {
+            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+            
+            // Ensure the email field exists and is not empty
+            if (c.email__c != null) {
+                email.setToAddresses(new List<String>{c.email__c});
+                email.setSubject('Welcome to our company');
+
+                // Personalize email with customer's name and more dynamic content
+                String body = 'Dear ' + (c.Name != null ? c.Name : 'Valued Customer') + ',\n\n' +
+                              'Welcome to MY RICE! You have been seen as a valuable customer to us. Please continue your journey with us, ' +
+                              'while we strive to provide you with high-quality resources.\n\n' +
+                              'We are proud to associate with valuable customers like you, and we look forward to collaborating with you by providing more exciting discounts and product offers.\n\n' +
+                              'So why take a step back? Take a leap of faith and shop with us more, while we provide you with valuable products and offers!\n\n' +
+                              'Thank you for shopping with us! Here are some products brought by customers who similarly bought items like yours:\n\n' +
+                              '[Product Recommendations Here]'; // Placeholder for product recommendations
+                
+                email.setPlainTextBody(body);
+                
+                // Add the email to the list
+                emails.add(email);
+            }
+        }
+        
+        // Send all emails in one batch
+        if (!emails.isEmpty()) {
+            Messaging.sendEmail(emails);
+        }
+    }
+}
